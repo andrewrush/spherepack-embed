@@ -47,7 +47,7 @@ termux-open spherepack_visualization.html
 
 **Живая демо (установка не требуется):**
 
-👉 **[Открыть spherepack_demo.html в браузере](https://raw.githack.com/andrewrush/spherepack-embed/main/spherepack_demo.html)**
+👉 **[Открыть spherepack_demo.html в браузере](https://andrewrush.github.io/spherepack-embed/spherepack_demo.html)**
 
 - Поворот мышью/пальцем, зум колёсиком/щипком
 - Переключение автовращения и каркасного режима

@@ -24,7 +24,7 @@ bash setup.sh
 python demo.py
 
 # 4. Open visualization in browser
-termux-open spherepack_demo.html
+termux-open spherepack_visualization.html
 ```
 
 Or manually:
@@ -39,9 +39,15 @@ python demo.py
 
 ## Interactive HTML Visualization
 
-After running `python demo.py` (or `python demo.py --visualize`), a standalone HTML file is generated:
+After running `python demo.py` (or `python demo.py --visualize`), a standalone HTML file is generated locally. To view it in a browser:
 
-**[`spherepack_demo.html`](spherepack_demo.html)** — interactive 3D scene powered by Three.js
+```bash
+termux-open spherepack_visualization.html
+```
+
+**Live demo (no install required):**
+
+👉 **[Open spherepack_demo.html in browser](https://htmlpreview.github.io/?https://github.com/andrewrush/spherepack-embed/blob/main/spherepack_demo.html)**
 
 - Drag to rotate, scroll to zoom
 - Toggle auto-rotation and wireframe mode
@@ -49,10 +55,22 @@ After running `python demo.py` (or `python demo.py --visualize`), a standalone H
 - Requires internet connection to load Three.js from CDN
 - Works in any modern browser (Chrome, Firefox, Safari)
 
-Open in Termux:
-```bash
-termux-open spherepack_demo.html
-```
+> **Note:** GitHub shows HTML source code instead of rendering it. Use the link above or enable [GitHub Pages](#github-pages) for a proper hosted version.
+
+* * *
+
+## GitHub Pages
+
+For a permanent hosted URL (e.g., `https://andrewrush.github.io/spherepack-embed/spherepack_demo.html`), enable GitHub Pages:
+
+1. Open https://github.com/andrewrush/spherepack-embed/settings/pages
+2. **Source:** Deploy from a branch
+3. **Branch:** `main` / `/(root)`
+4. Click **Save**
+5. Wait 1–2 minutes, then open:
+   ```
+   https://andrewrush.github.io/spherepack-embed/spherepack_demo.html
+   ```
 
 * * *
 
@@ -81,7 +99,7 @@ python demo.py --interactive
 
 # Generate and open visualization
 python demo.py --visualize
-termux-open spherepack_demo.html
+termux-open spherepack_visualization.html
 
 # Benchmark on your device
 python benchmark.py
@@ -156,9 +174,9 @@ Conclusion: packing density drops exponentially as dimension grows
             Astra #1 provides tighter bounds for high n,
             critical for embedding space optimization.
 
-HTML visualization saved: spherepack_demo.html
+HTML visualization saved: spherepack_visualization.html
 Open in browser:
-  termux-open spherepack_demo.html
+  termux-open spherepack_visualization.html
 ```
 
 ### Result interpretation
@@ -207,7 +225,7 @@ Minimum distance: 0.20
 Seed: [Enter]
 
 => Packed 61 spheres (clipped), density = 0.2564
-=> HTML visualization saved: spherepack_demo.html
+=> HTML visualization saved: spherepack_visualization.html
 ```
 
 * * *
@@ -313,6 +331,7 @@ spherepack-embed/
 ├── LICENSE                # MIT License
 ├── README.md              # This file (English)
 ├── README_RU.md           # Russian version
+├── spherepack_demo.html   # Fixed demo visualization (hosted via GitHub Pages)
 └── assets/
     └── spherepack_preview.jpg   # Static preview image for README
 ```

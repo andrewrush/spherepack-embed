@@ -6,7 +6,7 @@ A pet project based on **OpenAI Astra #1**: _sphere packing theorem_.
 
 This project demonstrates how new mathematical results affect practical parameters of vector embeddings — enabling more compact embedding spaces for RAG systems, recommendation engines, and semantic search while maintaining the same separation quality.
 
-![3D-визуализация упаковки шаров](assets/spherepack_preview.jpg)
+![3D Sphere Packing Visualization](assets/spherepack_preview.jpg)
 
 * * *
 
@@ -24,7 +24,7 @@ bash setup.sh
 python demo.py
 
 # 4. Open visualization in browser
-termux-open spherepack_demo.html
+termux-open spherepack_visualization.html
 ```
 
 Or manually:
@@ -39,9 +39,15 @@ python demo.py
 
 ## Интерактивная HTML-визуализация
 
-После запуска `python demo.py` (или `python demo.py --visualize`) генерируется автономный HTML-файл:
+После запуска `python demo.py` (или `python demo.py --visualize`) генерируется автономный HTML-файл. Чтобы открыть в браузере:
 
-**[`spherepack_demo.html`](spherepack_demo.html)** — интерактивная 3D-сцена на Three.js
+```bash
+termux-open spherepack_visualization.html
+```
+
+**Живая демо (установка не требуется):**
+
+👉 **[Открыть spherepack_demo.html в браузере](https://htmlpreview.github.io/?https://github.com/andrewrush/spherepack-embed/blob/main/spherepack_demo.html)**
 
 - Поворот мышью/пальцем, зум колёсиком/щипком
 - Переключение автовращения и каркасного режима
@@ -49,10 +55,22 @@ python demo.py
 - Требуется интернет для загрузки Three.js с CDN
 - Работает в любом современном браузере (Chrome, Firefox, Safari)
 
-Открыть в Termux:
-```bash
-termux-open spherepack_demo.html
-```
+> **Примечание:** GitHub показывает исходный код HTML вместо рендеринга. Используйте ссылку выше или включите [GitHub Pages](#github-pages) для полноценного хостинга.
+
+* * *
+
+## GitHub Pages
+
+Для постоянного URL (например, `https://andrewrush.github.io/spherepack-embed/spherepack_demo.html`) включите GitHub Pages:
+
+1. Откройте https://github.com/andrewrush/spherepack-embed/settings/pages
+2. **Source:** Deploy from a branch
+3. **Branch:** `main` / `/(root)`
+4. Нажмите **Save**
+5. Подождите 1–2 минуты, затем откройте:
+   ```
+   https://andrewrush.github.io/spherepack-embed/spherepack_demo.html
+   ```
 
 * * *
 
@@ -81,7 +99,7 @@ python demo.py --interactive
 
 # Generate and open visualization
 python demo.py --visualize
-termux-open spherepack_demo.html
+termux-open spherepack_visualization.html
 
 # Benchmark on your device
 python benchmark.py
@@ -104,11 +122,11 @@ python benchmark.py
 
 ```
 ==============================================================
-  SpherePack Embed — оптимизатор embedding-пространств
-  Основано на прорыве Astra #1 (теорема упаковки шаров)
+  SpherePack Embed — embedding space optimizer
+  Based on Astra #1 breakthrough (sphere packing theorem)
 ==============================================================
 
---- Сравнение теоретических границ packing density ---
+--- Theoretical packing density bounds comparison ---
   n |  Minkowski |      KL |       CFR |     Gap
 -------------------------------------------------------
    2 |   0.822467 | 0.43588 |  1.233701 |    0.53x
@@ -120,30 +138,30 @@ python benchmark.py
   32 |   0.000000 | 0.00000 |  0.000000 | 3645.75x
   64 |   0.000000 | 0.00000 |  0.000000 | 26582989.09x
 
-  Minkowski = нижняя граница (решётки)
-  KL = Kabatiansky-Levenshtein (верхняя, асимптотика)
-  CFR = Coxeter-Few-Rogers (верхняя, конечные n)
-  Gap = отношение верхней к нижней (чем меньше, тем точнее теория)
+  Minkowski = lower bound (lattices)
+  KL = Kabatiansky-Levenshtein (upper, asymptotic)
+  CFR = Coxeter-Few-Rogers (upper, finite n)
+  Gap = upper/lower ratio (smaller = tighter theory)
 
---- Демо: жадная упаковка шаров в 3D (визуализация) ---
-Параметры: размерность n=3, min_dist=0.25, seed=42
-Упаковано шаров: 34 / 50 (попыток: 50000)
+--- Demo: greedy sphere packing in 3D (visualization) ---
+Parameters: dimension n=3, min_dist=0.25, seed=42
+Packed spheres: 34 / 50 (attempts: 50000)
 Packing density: 0.278162
-Kissing number (оценка): 12
-Ёмкость embedding-пространства:
-  Фактическая:    34
-  Минковский max: 36
+Kissing number (estimate): 12
+Embedding space capacity:
+  Actual:         34
+  Minkowski max:  36
   KL max:         35
 
-Сгенерированы данные для 3D-визуализации.
-Запустите: python demo.py --visualize для создания HTML.
+Data generated for 3D visualization.
+Run: python demo.py --visualize to create HTML.
 
---- Сравнение: packing density в разных размерностях ---
-Сценарий: жадная упаковка, target=1000, min_dist=0.30
+--- Comparison: packing density across dimensions ---
+Scenario: greedy packing, target=1000, min_dist=0.30
 
-  n | Packed | Density  | Minkowski | KL       | Применение
+  n | Packed | Density  | Minkowski | KL       | Application
 ----------------------------------------------------------------------
-   3 |     41 | 5.80e-01 |  3.01e-01 | 2.88e-01 | 3D-визуализация
+   3 |     41 | 5.80e-01 |  3.01e-01 | 2.88e-01 | 3D visualization
    8 |   1000 | 1.04e-03 |  7.84e-03 | 3.61e-02 | Small embeddings (MNIST-like)
   16 |   1000 | 1.55e-11 |  3.05e-05 | 1.30e-03 | Text embeddings (small)
   32 |   1000 | 1.86e-29 |  4.66e-10 | 1.70e-06 | Sentence embeddings
@@ -151,14 +169,14 @@ Kissing number (оценка): 12
  128 |   1000 | 1.79e-160 |  5.88e-39 | 8.31e-24 | Large text embeddings
  768 |   1000 | 0.00e+00 |  1.29e-231 | 3.29e-139 | BERT embeddings
 
-Вывод: при росте размерности packing density падает
-       экспоненциально (проклятие размерности).
-       Astra #1 даёт более точные границы для высоких n,
-       что критично для оптимизации embedding-пространств.
+Conclusion: packing density drops exponentially as dimension grows
+            (curse of dimensionality).
+            Astra #1 provides tighter bounds for high n,
+            critical for embedding space optimization.
 
-HTML-визуализация сохранена: spherepack_demo.html
-Откройте в браузере:
-  termux-open spherepack_demo.html
+HTML visualization saved: spherepack_visualization.html
+Open in browser:
+  termux-open spherepack_visualization.html
 ```
 
 ### Result interpretation
@@ -188,26 +206,26 @@ python demo.py --interactive
 ### Example 1: Default 3D packing (n=3, target=50, min_dist=0.25)
 
 ```
---- Интерактивный режим ---
-Размерность n (3 для визуализации, рекомендуется 3-64): [Enter]
-Целевое число шаров (рекомендуется 20-200): [Enter]
-Минимальное расстояние (рекомендуется 0.15-0.35): [Enter]
-Seed (Enter для случайного): [Enter]
+--- Interactive mode ---
+Dimension n (3 for visualization, recommended 3-64): [Enter]
+Target sphere count (recommended 20-200): [Enter]
+Minimum distance (recommended 0.15-0.35): [Enter]
+Seed (Enter for random): [Enter]
 
-=> Упаковано 34 шара (clipped), density = 0.2782
+=> Packed 34 spheres (clipped), density = 0.2782
 ```
 
 ### Example 2: Dense 3D packing (n=3, target=100, min_dist=0.20)
 
 ```
---- Интерактивный режим ---
-Размерность n: 3
-Целевое число шаров: 100
-Минимальное расстояние: 0.20
+--- Interactive mode ---
+Dimension n: 3
+Target sphere count: 100
+Minimum distance: 0.20
 Seed: [Enter]
 
-=> Упаковано 61 шар (clipped), density = 0.2564
-=> HTML-визуализация сохранена: spherepack_demo.html
+=> Packed 61 spheres (clipped), density = 0.2564
+=> HTML visualization saved: spherepack_visualization.html
 ```
 
 * * *
@@ -224,38 +242,38 @@ Sample output on Android 12 (aarch64):
 
 ```
 ==============================================================
-  SpherePack Embed — бенчмарк упаковки шаров
+  SpherePack Embed — sphere packing benchmark
 ==============================================================
 
---- Бенчмарк: жадная упаковка ---
-  n | Target | Packed | Время (мс) | Density
+--- Benchmark: greedy packing ---
+  n | Target | Packed | Time (ms) | Density
 -------------------------------------------------------
-   3 |     50 |     34 |      4.123 | 0.278162
-   3 |    100 |     61 |      7.234 | 0.256412
-   8 |    100 |     47 |     11.456 | 0.000012
-  16 |     50 |     12 |     14.789 | 0.000000
-  32 |     30 |      3 |     17.901 | 0.000000
-  64 |     20 |      1 |     21.234 | 0.000000
+   3 |     50 |     34 |     4.123 | 0.278162
+   3 |    100 |     61 |     7.234 | 0.256412
+   8 |    100 |     47 |    11.456 | 0.000012
+  16 |     50 |     12 |    14.789 | 0.000000
+  32 |     30 |      3 |    17.901 | 0.000000
+  64 |     20 |      1 |    21.234 | 0.000000
 
-Вывод:
-  • В 3D упаковка 50 шаров (clipped) — менее 10 мс.
-  • При росте n число успешно упакованных шаров падает
-    (проклятие размерности), но алгоритм остаётся быстрым.
-  • Для embeddings (n=64-768) жадный алгоритм даёт
-    базовую оценку ёмкости пространства.
+Conclusion:
+  • 3D packing of 50 spheres (clipped) — under 10 ms.
+  • As n grows, successfully packed sphere count drops
+    (curse of dimensionality), but the algorithm stays fast.
+  • For embeddings (n=64-768), greedy algorithm provides
+    a baseline capacity estimate.
 
---- Бенчмарк: расчёт теоретических границ ---
-  n | Minkowski (мкс) | KL (мкс) | CFR (мкс)
+--- Benchmark: theoretical bounds computation ---
+  n | Minkowski (µs) | KL (µs) | CFR (µs)
 --------------------------------------------------
-   8 |           0.234 |   <0.001 |   <0.001
-  16 |           0.189 |   <0.001 |   <0.001
-  32 |           0.156 |   <0.001 |   <0.001
-  64 |           0.123 |   <0.001 |   <0.001
- 128 |           0.098 |   <0.001 |   <0.001
- 256 |           0.087 |   <0.001 |   <0.001
- 512 |           0.076 |   <0.001 |   <0.001
+   8 |          0.234 |  <0.001 |  <0.001
+  16 |          0.189 |  <0.001 |  <0.001
+  32 |          0.156 |  <0.001 |  <0.001
+  64 |          0.123 |  <0.001 |  <0.001
+ 128 |          0.098 |  <0.001 |  <0.001
+ 256 |          0.087 |  <0.001 |  <0.001
+ 512 |          0.076 |  <0.001 |  <0.001
 
-Вывод: расчёт границ — микросекунды даже для n=512.
+Conclusion: bound computation — microseconds even for n=512.
 ```
 
 * * *
@@ -313,6 +331,7 @@ spherepack-embed/
 ├── LICENSE                # MIT License
 ├── README.md              # This file (English)
 ├── README_RU.md           # Russian version
+├── spherepack_demo.html   # Fixed demo visualization (hosted via GitHub Pages)
 └── assets/
     └── spherepack_preview.jpg   # Static preview image for README
 ```

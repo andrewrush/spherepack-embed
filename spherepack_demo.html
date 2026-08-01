@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpherePack Embed — 3D Visualization</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #0a0a0a; font-family: 'Segoe UI', sans-serif; }
+        #info {
+            position: absolute; top: 10px; left: 10px; color: #00ff88;
+            background: rgba(0,0,0,0.7); padding: 15px; border-radius: 8px;
+            font-size: 14px; z-index: 10; max-width: 300px;
+        }
+        #info h1 { margin: 0 0 8px 0; font-size: 16px; color: #fff; }
+        #info p { margin: 4px 0; }
+        #controls {
+            position: absolute; bottom: 10px; left: 10px; z-index: 10;
+        }
+        button {
+            background: #00ff88; border: none; padding: 8px 16px;
+            margin: 2px; border-radius: 4px; cursor: pointer; font-weight: bold;
+        }
+        button:hover { background: #00cc6a; }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h1>SpherePack Embed</h1>
+        <p>Based on Astra #1 — Sphere Packing</p>
+        <p>Spheres: <span id="count">34</span></p>
+        <p>Min dist: 0.250 &bull; Radius: 0.1250</p>
+        <p>Drag to rotate &bull; Scroll to zoom</p>
+    </div>
+    <div id="controls">
+        <button onclick="resetCamera()">Reset</button>
+        <button onclick="toggleRotation()">Rotate</button>
+        <button onclick="toggleWireframe()">Wireframe</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0a0a);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 100);
+        camera.position.set(1.5, 1.2, 1.5);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(2, 3, 2);
+        scene.add(dirLight);
+
+        const pointLight = new THREE.PointLight(0x00ff88, 0.5, 10);
+        pointLight.position.set(0.5, 0.5, 0.5);
+        scene.add(pointLight);
+
+        const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+        const cubeEdges = new THREE.EdgesGeometry(cubeGeometry);
+        const cubeLine = new THREE.LineSegments(cubeEdges, new THREE.LineBasicMaterial({ color: 0x444444 }));
+        cubeLine.position.set(0.5, 0.5, 0.5);
+        scene.add(cubeLine);
+
+        const radius = 0.125000;
+        const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+        const sphereMaterial = new THREE.MeshPhongMaterial({
+            color: 0x00ff88,
+            transparent: true,
+            opacity: 0.7,
+            shininess: 100,
+            side: THREE.DoubleSide
+        });
+
+        const centers = [
+            new THREE.Vector3(0.705467, 0.454159, 0.768948),
+            new THREE.Vector3(0.648026, 0.195633, 0.856717),
+            new THREE.Vector3(0.695855, 0.714548, 0.221085),
+            new THREE.Vector3(0.462789, 0.403099, 0.820074),
+            new THREE.Vector3(0.607899, 0.742071, 0.457561),
+            new THREE.Vector3(0.295429, 0.540939, 0.172863),
+            new THREE.Vector3(0.390894, 0.853024, 0.794841),
+            new THREE.Vector3(0.708788, 0.270979, 0.475041),
+            new THREE.Vector3(0.157853, 0.240717, 0.637287),
+            new THREE.Vector3(0.130522, 0.715193, 0.623638),
+            new THREE.Vector3(0.551556, 0.229848, 0.210898),
+            new THREE.Vector3(0.846423, 0.806436, 0.649780),
+            new THREE.Vector3(0.436856, 0.156211, 0.495493),
+            new THREE.Vector3(0.362854, 0.839675, 0.343188),
+            new THREE.Vector3(0.853870, 0.500556, 0.232923),
+            new THREE.Vector3(0.135452, 0.297242, 0.223867),
+            new THREE.Vector3(0.229826, 0.483408, 0.437667),
+            new THREE.Vector3(0.823427, 0.214800, 0.212828),
+            new THREE.Vector3(0.564834, 0.494967, 0.188087),
+            new THREE.Vector3(0.203735, 0.423914, 0.813003),
+            new THREE.Vector3(0.630948, 0.735979, 0.801915),
+            new THREE.Vector3(0.209053, 0.772073, 0.125925),
+            new THREE.Vector3(0.128006, 0.137435, 0.869813),
+            new THREE.Vector3(0.513246, 0.492956, 0.522309),
+            new THREE.Vector3(0.838947, 0.134039, 0.697264),
+            new THREE.Vector3(0.821395, 0.503165, 0.523868),
+            new THREE.Vector3(0.379763, 0.156755, 0.776559),
+            new THREE.Vector3(0.840126, 0.871698, 0.403202),
+            new THREE.Vector3(0.130899, 0.744045, 0.366168),
+            new THREE.Vector3(0.219669, 0.669304, 0.871756),
+            new THREE.Vector3(0.379714, 0.720277, 0.578719),
+            new THREE.Vector3(0.869310, 0.635842, 0.874396),
+            new THREE.Vector3(0.320807, 0.128636, 0.173321),
+            new THREE.Vector3(0.176864, 0.126841, 0.407797)
+        ];
+
+        let wireframeMode = false;
+        const spheres = [];
+
+        centers.forEach((center, i) => {
+            const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial.clone());
+            sphere.position.copy(center);
+            const hue = (center.x + center.y + center.z) / 3;
+            sphere.material.color.setHSL(0.3 + hue * 0.2, 0.8, 0.5);
+            scene.add(sphere);
+            spheres.push(sphere);
+        });
+
+        const ballVol = (4/3) * Math.PI * Math.pow(radius, 3);
+        const totalVol = centers.length * ballVol;
+
+        let autoRotate = false;
+        function toggleRotation() { autoRotate = !autoRotate; }
+        function toggleWireframe() {
+            wireframeMode = !wireframeMode;
+            spheres.forEach(s => { s.material.wireframe = wireframeMode; });
+        }
+        function resetCamera() {
+            camera.position.set(1.5, 1.2, 1.5);
+            camera.lookAt(0.5, 0.5, 0.5);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (autoRotate) { scene.rotation.y += 0.005; }
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

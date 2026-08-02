@@ -143,7 +143,7 @@ python binpack.py
 ### Окружение
 
 - Устройство: Android 12, aarch64
-- **Termux:** v0.118
+- **Termux**
 - **Python:** 3.13.13
 - **NumPy:** 2.4.4
 - **SciPy:** 1.15.0

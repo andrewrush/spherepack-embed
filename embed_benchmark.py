@@ -130,6 +130,9 @@ def benchmark_compression(dims=None):
     total_tasks = len(dims) * len(methods)
     task_num = 0
 
+    # Собираем результаты для агрегации
+    results = {name: [] for name in methods}
+
     print("=" * 80)
     print("  Embedding Compression Benchmark — Measured Recall@10")
     print("  Synthetic clustered data (3000 samples, 50 clusters)")
@@ -152,9 +155,21 @@ def benchmark_compression(dims=None):
             else:
                 r = recall_at_k(X, Xc, k=10, n_queries=300)
 
+            results[name].append(r)
             print(f"{dim:>5} | {name:>18} | {ratio:>5.1f}x | {r:>10.3f} | {t:>9.1f}")
 
+    # Агрегированные средние
     print()
+    print("=" * 80)
+    print("  AVERAGE Recall@10 across all dimensions")
+    print("=" * 80)
+    print(f"{'Method':>20} | {'Avg Recall@10':>14} | {'Ratio':>6}")
+    print("-" * 48)
+    for name, (fn, ratio) in methods.items():
+        avg_r = np.mean(results[name])
+        print(f"{name:>20} | {avg_r:>14.3f} | {ratio:>5.1f}x")
+    print()
+
     print("Вывод:")
     print("  • Scalar 8-bit: ~4× сжатие, recall ~0.96 — лучший баланс.")
     print("  • Scalar 4-bit: ~8× сжатие, recall ~0.55 — агрессивно.")

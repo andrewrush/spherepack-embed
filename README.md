@@ -389,7 +389,7 @@ python embed_benchmark.py
 | Original float32 | 1× | 1.000 | Baseline |
 | Scalar 8-bit | 4× | ~0.96 | Best practical tradeoff |
 | Scalar 4-bit | 8× | ~0.55 | Aggressive, use with care |
-| Product Q (m=8) | 4× | ~0.42 | Highly dependent on init |
+| Product Q (m=8) | 4× | ~0.275 | Highly dependent on init |
 | Random proj (d/2) | 2× | ~0.45 | Unstable on clustered data |
 
 **Takeaway:** Real compression requires tested algorithms (FAISS IVF-PQ, ScaNN, binary embeddings) — not just theoretical bounds. Scalar 8-bit quantization gives ~4× size reduction with minimal quality loss, and is trivial to implement.

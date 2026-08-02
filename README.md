@@ -189,6 +189,9 @@ python binpack.py
 ==============================================================
 
 --- Theoretical packing density bounds comparison ---
+
+![Bounds comparison](assets/spherepack_bounds_comparison.png)
+
   n |  Minkowski |      KL |       CFR |     Gap
 -------------------------------------------------------
    2 |   0.822467 | 0.43588 |  1.233701 |    0.53x
@@ -379,6 +382,8 @@ Honest measurement of practical compression methods on synthetic data:
 ```bash
 python embed_benchmark.py
 ```
+
+![Compression benchmark](assets/embed_compression_benchmark.png)
 
 | Method | Compression | Recall@10 (clusters) | Notes |
 |--------|-------------|----------------------|-------|

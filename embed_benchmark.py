@@ -12,18 +12,28 @@ import time
 import sys
 
 
-def generate_embeddings(n_samples=3000, n_dim=128, dist="clusters"):
+# Experiment parameters (for reproducibility reporting)
+N_SAMPLES = 3000
+N_CLUSTERS = 50
+N_QUERIES = 300
+K_VALUES = [1, 10]
+DATA_SEED = 42
+QUERY_SEED = 123
+DISTRIBUTION = "clusters"
+METRIC = "euclidean"
+
+
+def generate_embeddings(n_samples=N_SAMPLES, n_dim=128, dist=DISTRIBUTION):
     """Synthetic embeddings: gaussian, sphere, or clustered."""
-    rng = np.random.default_rng(42)
+    rng = np.random.default_rng(DATA_SEED)
     if dist == "gaussian":
         return rng.standard_normal((n_samples, n_dim)).astype(np.float32)
     if dist == "sphere":
         x = rng.standard_normal((n_samples, n_dim))
         return (x / np.linalg.norm(x, axis=1, keepdims=True)).astype(np.float32)
     if dist == "clusters":
-        n_clusters = 50
-        centers = rng.standard_normal((n_clusters, n_dim)) * 3
-        labels = rng.choice(n_clusters, n_samples)
+        centers = rng.standard_normal((N_CLUSTERS, n_dim)) * 3
+        labels = rng.choice(N_CLUSTERS, n_samples)
         return (centers[labels] + rng.standard_normal((n_samples, n_dim)) * 0.5).astype(np.float32)
     raise ValueError(f"Unknown distribution: {dist}")
 
@@ -37,9 +47,9 @@ def pairwise_distances(X, Y):
     return dists
 
 
-def recall_at_k(original, compressed, k=10, n_queries=500):
+def recall_at_k(original, compressed, k=10, n_queries=N_QUERIES):
     """Fraction of true k-NN preserved after compression."""
-    rng = np.random.default_rng(123)
+    rng = np.random.default_rng(QUERY_SEED)
     n = min(n_queries, original.shape[0])
     idx = rng.choice(original.shape[0], n, replace=False)
 
@@ -120,29 +130,31 @@ def progress_bar(current, total, prefix="", bar_len=30):
 def benchmark_compression(dims=None):
     dims = dims or [32, 64, 128, 256, 384, 512]
     methods = {
-        "Original float32": (lambda x: x, 1.0),
-        "Scalar 8-bit": (lambda x: scalar_quantize(x, 8), 4.0),
-        "Scalar 4-bit": (lambda x: scalar_quantize(x, 4), 8.0),
-        "Product Q (m=8)": (lambda x: product_quantize(x, 8, 8), 4.0),
-        "RandProj d/2": (lambda x: random_projection(x, x.shape[1]//2), 2.0),
+        "Original float32": (lambda x: x, 1.0, 4),
+        "Scalar 8-bit": (lambda x: scalar_quantize(x, 8), 4.0, 1),
+        "Scalar 4-bit": (lambda x: scalar_quantize(x, 4), 8.0, 0.5),
+        "Product Q (m=8)": (lambda x: product_quantize(x, 8, 8), 4.0, 1),
+        "RandProj d/2": (lambda x: random_projection(x, x.shape[1]//2), 2.0, 4),
     }
 
     total_tasks = len(dims) * len(methods)
     task_num = 0
 
     # Собираем результаты для агрегации
-    results = {name: [] for name in methods}
+    results = {name: {"r1": [], "r10": []} for name in methods}
 
-    print("=" * 80)
-    print("  Embedding Compression Benchmark — Measured Recall@10")
-    print("  Synthetic clustered data (3000 samples, 50 clusters)")
-    print("=" * 80)
-    print(f"{'Dim':>5} | {'Method':>18} | {'Ratio':>6} | {'Recall@10':>10} | {'Time (ms)':>10}")
-    print("-" * 80)
+    print("=" * 90)
+    print("  Embedding Compression Benchmark — Measured Recall@k on Synthetic Data")
+    print("=" * 90)
+    print(f"  Config: n_samples={N_SAMPLES}, n_clusters={N_CLUSTERS}, n_queries={N_QUERIES}")
+    print(f"  Data seed={DATA_SEED}, query seed={QUERY_SEED}, distribution={DISTRIBUTION}, metric={METRIC}")
+    print("=" * 90)
+    print(f"{'Dim':>5} | {'Method':>18} | {'Ratio':>6} | {'Bytes/vec':>9} | {'R@1':>7} | {'R@10':>7} | {'Time(ms)':>8}")
+    print("-" * 90)
 
     for dim in dims:
-        X = generate_embeddings(3000, dim, "clusters")
-        for name, (fn, ratio) in methods.items():
+        X = generate_embeddings(N_SAMPLES, dim, DISTRIBUTION)
+        for name, (fn, ratio, bytes_per_val) in methods.items():
             task_num += 1
             progress_bar(task_num, total_tasks, prefix="Running")
 
@@ -151,31 +163,38 @@ def benchmark_compression(dims=None):
             t = (time.perf_counter() - t0) * 1000
 
             if "RandProj" in name:
-                r = recall_at_k(X, Xc, k=10, n_queries=300)
+                r1 = recall_at_k(X, Xc, k=1, n_queries=N_QUERIES)
+                r10 = recall_at_k(X, Xc, k=10, n_queries=N_QUERIES)
             else:
-                r = recall_at_k(X, Xc, k=10, n_queries=300)
+                r1 = recall_at_k(X, Xc, k=1, n_queries=N_QUERIES)
+                r10 = recall_at_k(X, Xc, k=10, n_queries=N_QUERIES)
 
-            results[name].append(r)
-            print(f"{dim:>5} | {name:>18} | {ratio:>5.1f}x | {r:>10.3f} | {t:>9.1f}")
+            results[name]["r1"].append(r1)
+            results[name]["r10"].append(r10)
+            bytes_per_vec = int(dim * bytes_per_val)
+            print(f"{dim:>5} | {name:>18} | {ratio:>5.1f}x | {bytes_per_vec:>9} | {r1:>7.3f} | {r10:>7.3f} | {t:>8.1f}")
 
     # Агрегированные средние
     print()
-    print("=" * 80)
-    print("  AVERAGE Recall@10 across all dimensions")
-    print("=" * 80)
-    print(f"{'Method':>20} | {'Avg Recall@10':>14} | {'Ratio':>6}")
-    print("-" * 48)
-    for name, (fn, ratio) in methods.items():
-        avg_r = np.mean(results[name])
-        print(f"{name:>20} | {avg_r:>14.3f} | {ratio:>5.1f}x")
+    print("=" * 90)
+    print("  AVERAGE across all dimensions")
+    print("=" * 90)
+    print(f"{'Method':>20} | {'Avg R@1':>10} | {'Avg R@10':>10} | {'Ratio':>6} | {'Bytes/vec':>9}")
+    print("-" * 70)
+    for name, (fn, ratio, bytes_per_val) in methods.items():
+        avg_r1 = np.mean(results[name]["r1"])
+        avg_r10 = np.mean(results[name]["r10"])
+        bytes_per_vec = int(np.mean(dims) * bytes_per_val)
+        print(f"{name:>20} | {avg_r1:>10.3f} | {avg_r10:>10.3f} | {ratio:>5.1f}x | {bytes_per_vec:>9}")
     print()
 
     print("Вывод:")
-    print("  • Scalar 8-bit: ~4× сжатие, recall ~0.96 — лучший баланс.")
-    print("  • Scalar 4-bit: ~8× сжатие, recall ~0.55 — агрессивно.")
-    print("  • Product Q: recall сильно зависит от данных и k-means init.")
+    print("  • Scalar 8-bit: ~4× сжатие, R@10 ~0.96 — лучший баланс.")
+    print("  • Scalar 4-bit: ~8× сжатие, R@10 ~0.55 — агрессивно.")
+    print("  • Product Q: R@10 сильно зависит от данных и k-means init.")
     print("  • Random projection: нестабилен на кластеризованных данных.")
     print("  • Для production используйте FAISS (IVF-PQ, HNSW) или ScaNN.")
+    print("  • Данные синтетические; результаты на реальных корпусах могут отличаться.")
     print()
 
 

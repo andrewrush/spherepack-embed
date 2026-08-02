@@ -42,7 +42,7 @@ Or manually:
 
 ```bash
 pkg install python -y
-pip install numpy
+pip install -r requirements.txt
 python demo.py
 ```
 
@@ -96,7 +96,6 @@ https://andrewrush.github.io/spherepack-embed/spherepack_demo.html
 | `python benchmark.py` | Performance benchmark across n = 3, 8, 16, 32, 64 |
 | `python embed_benchmark.py` | **NEW (v2)** Honest compression benchmark — measured Recall@k on synthetic data |
 | `python binpack.py` | **NEW (v2)** Binary section placement optimizer for kernel/ISO images |
-| `python lattice_pack.py` | **NEW (v2)** Lattice vs greedy packing comparison |
 | `bash setup.sh` | Auto-install Python and NumPy in Termux |
 
 ### Examples
@@ -254,8 +253,9 @@ Scenario: greedy packing, target=1000, min_dist=0.30
 
 Conclusion: packing density drops exponentially as dimension grows
             (curse of dimensionality).
-            Astra #1 provides tighter bounds for high n,
-            critical for embedding space optimization.
+            If independently confirmed, Astra #1 could narrow
+            theoretical bounds for high n. Practical embedding
+            benefits still require separate algorithms.
 
 HTML visualization saved: spherepack_visualization.html
 Open in browser:
@@ -376,6 +376,8 @@ Conclusion: bound computation — microseconds even for n=512.
 
 ## Embed Compression Benchmark (v2)
 
+Measured compression benchmark on synthetic clustered embeddings.
+
 Honest measurement of practical compression methods on synthetic data:
 
 ```bash
@@ -448,17 +450,19 @@ Padding saved: 0 bytes (0.0 KiB)
 
 ## Why should an ordinary person care?
 
-### Everyday analogy
+### Practical Reality & The Curse of Dimensionality
 
-Imagine a library with 10,000 books. To find any book quickly, you need them organized on shelves — not piled randomly on the floor. The more efficiently you pack the books (while keeping them accessible), the smaller the library building you need.
+Vector embeddings represent data as coordinates in high-dimensional space. Theoretical breakthroughs like Astra #1 prove that tighter mathematical bounds for sphere packing *exist* in high dimensions.
 
-**Vector embeddings** are like the "coordinates" of each book in a multi-dimensional space. A RAG system (Retrieval-Augmented Generation, used by ChatGPT and other AI assistants) stores millions of these coordinates to find relevant information quickly.
+However, there is a fundamental gap between theoretical existence and constructive algorithms. While naive or greedy packing works well in low dimensions (n ≤ 16), it suffers from the **curse of dimensionality** as `n` grows — easily observable in `benchmark.py`. At n=768 (typical for BERT embeddings), greedy packing density drops to effectively zero.
 
-**Classical approach:** throw books randomly into a warehouse. You need a huge warehouse because nothing is organized.
+**This project is not a production-ready RAG optimizer.** It is an educational and benchmarking tool designed to:
 
-**Sphere packing insight:** mathematics proves there are hard limits on how tightly you can pack information. Astra #1 tightened those limits, showing that more efficient packing is theoretically possible.
+1. Visualize the gap between theoretical mathematical bounds and practical algorithmic constraints.
+2. Provide a lightweight, reproducible testbed (optimized for Termux/aarch64) to experiment with packing metrics.
+3. Demonstrate how new mathematical proofs might eventually influence future quantization and indexing strategies, even if current greedy methods fall far short.
 
-**Reality check:** knowing the limit exists doesn't automatically shrink your warehouse. You still need actual shelves (quantization algorithms, ANN indexes, dimensionality reduction). This project shows both the theoretical ceiling and honest measurements of practical methods.
+**Reality check:** knowing a tighter limit exists doesn't automatically shrink your vector database. You still need actual algorithms (quantization, ANN indexes, dimensionality reduction). This project shows both the theoretical ceiling and honest measurements of practical methods.
 
 ### Where this is used
 
@@ -466,7 +470,6 @@ Imagine a library with 10,000 books. To find any book quickly, you need them org
 - **Recommendation engines** (Netflix, Spotify, YouTube) — compact embeddings = real-time recommendations on mobile.
 - **Semantic search** (Elasticsearch, Pinecone, Weaviate) — index more documents with the same RAM.
 - **On-device AI** (Apple Intelligence, Gemini Nano) — run retrieval locally without internet.
-- **Kernel/ISO development** — optimal section placement minimizes binary size (`binpack.py`).
 - **DNA storage** — pack more data in synthetic DNA sequences using code-like structures.
 
 ### What this demo shows
@@ -499,7 +502,6 @@ spherepack-embed/
 ├── benchmark.py           # Performance benchmark + lattice comparison
 ├── embed_benchmark.py     # Honest embed compression benchmark (v2)
 ├── binpack.py             # Binary section placement optimizer (v2)
-├── lattice_pack.py        # Lattice vs greedy benchmark (v2)
 ├── setup.sh               # Termux setup script
 ├── requirements.txt       # Python dependencies
 ├── .gitignore             # Git ignore rules

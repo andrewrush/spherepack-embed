@@ -10,6 +10,17 @@ This project demonstrates how new mathematical results affect practical paramete
 
 * * *
 
+## ⚠️ What this project does NOT do
+
+❌ It does **not** prove you can shrink a production RAG system by 70%.
+   Theory gives bounds, not algorithms.
+
+❌ It does **not** replace FAISS, ScaNN, or Pinecone.
+   Real ANN systems use HNSW, IVF, quantization — not sphere packing formulas.
+
+❌ It does **not** implement Astra's new bound directly as closed-form.
+   OpenAI reports an asymptotic improvement; exact CE values are tabulated.
+
 ## Quick Start in Termux
 
 ```bash
@@ -154,7 +165,7 @@ python binpack.py
 
 **Minkowski** = lower bound (lattices)  
 **KL** = Kabatiansky-Levenshtein (upper, asymptotic, 1978)  
-**Cohn-Elkies** = strongest known two-point upper bound; Astra #1 improved the general bound toward this threshold  
+**Cohn-Elkies** = strongest known two-point upper bound; OpenAI reports improved the general bound toward this threshold  
 **Best Known** = best achieved density (lattice or non-lattice)  
 **Optimal** = proven optimal dimension (1, 2, 3, 8, 24)
 
@@ -479,7 +490,7 @@ Imagine a library with 10,000 books. To find any book quickly, you need them org
 
 ```
 spherepack-embed/
-├── spherepack.py          # Core: packing algorithms, bounds, metrics, lattices
+├── spherepack.py          # Core: packing algorithms, bounds, metrics, lattices (E8, D_n, Z_n)
 ├── demo.py                # Interactive demo + HTML generator
 ├── benchmark.py           # Performance benchmark + lattice comparison
 ├── embed_benchmark.py     # Honest embed compression benchmark (v2)

@@ -79,7 +79,7 @@ def print_layout(placement: List[Tuple[str, int, int]], base: int, title: str = 
 
 
 def demo():
-    """Demo with typical kernel/ELF section layout."""
+    """Demo with mixed alignment to show real padding savings."""
     sections = [
         Section(".text",   size=0x28000, align=0x1000, flags="RX"),
         Section(".rodata", size=0x0C000, align=0x1000, flags="R"),
@@ -87,6 +87,9 @@ def demo():
         Section(".bss",    size=0x14000, align=0x1000, flags="RW"),
         Section(".init",   size=0x00200, align=0x0100, flags="RX"),
         Section(".fini",   size=0x00200, align=0x0100, flags="RX"),
+        # These small sections with large alignment create padding
+        Section(".tiny1",  size=0x00010, align=0x1000, flags="R"),
+        Section(".tiny2",  size=0x00020, align=0x1000, flags="R"),
         Section(".symtab", size=0x05000, align=0x0008, flags="R"),
         Section(".strtab", size=0x03000, align=0x0008, flags="R"),
     ]
@@ -97,7 +100,7 @@ def demo():
     optimal = optimal_place(sections, base)
 
     print_layout(naive, base, "NAIVE: Original order")
-    print_layout(optimal, base, "OPTIMAL: Sorted by alignment")
+    print_layout(optimal, base, "OPTIMAL: Sorted by alignment (largest first)")
 
     pad_naive = compute_padding(naive, base)
     pad_opt = compute_padding(optimal, base)
@@ -107,6 +110,9 @@ def demo():
         print(f"Relative: {saved/pad_naive*100:.1f}% less padding")
     else:
         print("Relative: 0.0% (no padding in naive layout)")
+    print()
+    print("  Принцип: размещать секции с БОЛЬШИМ alignment ПЕРВЫМИ.")
+    print("  Это минимизирует 'дыры' от выравнивания мелких секций.")
 
 
 if __name__ == "__main__":

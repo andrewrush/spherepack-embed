@@ -76,10 +76,9 @@ def print_lattice_comparison():
         print(f" {n:2d} | {greedy_d:9.2e} | {lattice_d:9.2e} | {lattice_name:>10} | {opt_str:>10} | {ratio:8.1f}x")
 
     print()
-    print("  Примечание: n ≤ 4 — разные нормировки (unit cube vs ℝⁿ).")
-    print("              Сравнение осмысленно только при n ≥ 6.")
-    print("  Вывод: в высоких размерностях случайная упаковка на порядки")
-    print("         хуже структурированных решёток. Структура — ключ.")
+    print("  Note: n≤4 — разные нормировки.")
+    print("  Сравнение верно только при n≥6.")
+    print("  Вывод: решётки >> случайной. Структура — ключ.")
     print()
 
 def print_packing_demo(n=3, target=50, min_dist=0.25, seed=42):

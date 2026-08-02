@@ -5,7 +5,9 @@ import os
 
 from spherepack import (
     greedy_packing, packing_density, volume_n_ball, kissing_number_estimate,
-    embedding_capacity, compare_bounds, minkowski_bound, kabatiansky_levenshtein_bound,
+    embedding_capacity, compare_bounds, compare_all_bounds,
+    minkowski_bound, kabatiansky_levenshtein_bound,
+    cohn_elkies_bound, optimal_density, lattice_density,
     zeta
 )
 
@@ -28,6 +30,54 @@ def print_bounds_table():
     print("  KL = Kabatiansky-Levenshtein (верхняя, асимптотика)")
     print("  CFR = Coxeter-Few-Rogers (верхняя, конечные n)")
     print("  Gap = отношение верхней к нижней (чем меньше, тем точнее теория)")
+    print()
+
+def print_ce_bounds_table():
+    """NEW (v2): Extended table with Cohn-Elkies and best known densities."""
+    print("--- Расширенные границы: Cohn-Elkies (порог Astra #1) ---")
+    print("  n |  Минковский |      KL |  Cohn-Elkies | Лучшая изв. | Оптимальна?")
+    print("-" * 72)
+    n_values = [1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 24]
+    for r in compare_all_bounds(n_values):
+        opt_str = f"{r['optimal']:.5f}" if r['optimal'] else "     ?"
+        is_opt = "✅" if r['n'] in {1, 2, 3, 8, 24} else "❓"
+        print(f" {r['n']:2d} | {r['minkowski']:10.5f} | {r['kl']:7.5f} | {r['ce']:11.5f} | {opt_str:>10} | {is_opt}")
+    print()
+    print("  CE = Cohn-Elkies LP upper bound — порог, к которому приблизился Astra #1")
+    print("  Лучшая изв. = лучшая известная плотность (решётки + не-решётки)")
+    print("  Оптимальна: ✅ = доказано оптимально, ❓ = открытая проблема")
+    print()
+
+def print_lattice_comparison():
+    """NEW (v2): Compare greedy random with lattice packings."""
+    print("--- Сравнение: жадная случайная vs решётчатые упаковки ---")
+    print("  n | Жадная Δ  | D_n Δ     | E8/Leech Δ | Лучшая изв. | Отношение L/G")
+    print("-" * 75)
+
+    test_dims = [2, 3, 4, 6, 8, 12, 16, 24]
+    for n in test_dims:
+        centers = greedy_packing(n, min(500, 50 if n > 16 else 200), 0.3, max_attempts=50000, seed=42)
+        greedy_d = packing_density(centers, n, 0.15)
+
+        if n == 8:
+            lattice_d = lattice_density(8, "e8")
+            lattice_name = f"{lattice_d:.2e}"
+        elif n == 24:
+            lattice_d = lattice_density(24, "leech")
+            lattice_name = f"{lattice_d:.2e}"
+        else:
+            lattice_d = lattice_density(n, "dn")
+            lattice_name = f"{lattice_d:.2e}"
+
+        opt = optimal_density(n)
+        opt_str = f"{opt:.2e}" if opt else "?"
+        ratio = lattice_d / greedy_d if greedy_d > 0 else float('inf')
+
+        print(f" {n:2d} | {greedy_d:9.2e} | {lattice_d:9.2e} | {lattice_name:>10} | {opt_str:>10} | {ratio:8.1f}x")
+
+    print()
+    print("  Вывод: в высоких размерностях случайная упаковка на порядки хуже")
+    print("         структурированных решёток. Структура — ключ к плотности.")
     print()
 
 def print_packing_demo(n=3, target=50, min_dist=0.25, seed=42):
@@ -90,19 +140,11 @@ def print_embedding_comparison():
     print()
 
 def generate_html_visualization(centers, filename="spherepack_visualization.html", min_dist=0.25):
-    """Generate standalone HTML with Three.js visualization.
-
-    Args:
-        centers: numpy array of sphere centers
-        filename: output HTML filename
-        min_dist: minimum distance between centers (determines sphere radius)
-    """
-
+    """Generate standalone HTML with Three.js visualization."""
     centers_js = []
     for c in centers:
         centers_js.append(f"new THREE.Vector3({c[0]:.6f}, {c[1]:.6f}, {c[2]:.6f})")
     centers_js_str = ",\n            ".join(centers_js)
-
     radius = min_dist / 2.0
 
     html = f"""<!DOCTYPE html>
@@ -205,9 +247,6 @@ def generate_html_visualization(centers, filename="spherepack_visualization.html
             spheres.push(sphere);
         }});
 
-        const ballVol = (4/3) * Math.PI * Math.pow(radius, 3);
-        const totalVol = centers.length * ballVol;
-
         let autoRotate = false;
         function toggleRotation() {{ autoRotate = !autoRotate; }}
         function toggleWireframe() {{
@@ -239,7 +278,6 @@ def generate_html_visualization(centers, filename="spherepack_visualization.html
 
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(html)
-
     return filename
 
 def interactive_mode():
@@ -264,6 +302,8 @@ def interactive_mode():
     print()
     print_header()
     print_bounds_table()
+    print_ce_bounds_table()
+    print_lattice_comparison()
 
     if n == 3:
         centers = greedy_packing(n, target, min_dist, max_attempts=50000, seed=seed, clip_to_bounds=True)
@@ -307,8 +347,9 @@ def main():
 
     print_header()
     print_bounds_table()
+    print_ce_bounds_table()
+    print_lattice_comparison()
 
-    # For 3D visualization, use clip_to_bounds so spheres stay inside the cube
     if args.visualize or args.n == 3:
         centers = greedy_packing(args.n, args.target, args.min_dist, max_attempts=50000, seed=args.seed, clip_to_bounds=True)
         r = args.min_dist / 2.0
@@ -330,7 +371,7 @@ def main():
 
     if args.visualize or args.n == 3:
         if len(centers) > 0:
-            fname = generate_html_visualization(centers, min_dist=min_dist)
+            fname = generate_html_visualization(centers, min_dist=args.min_dist)
             print(f"Рабочая HTML-визуализация сохранена: {fname}")
             print("Откройте в браузере (экспериментальный файл, перезаписывается при запуске):")
             print(f"  termux-open {fname}")

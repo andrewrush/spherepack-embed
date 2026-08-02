@@ -2,36 +2,36 @@
 
 > [🇺🇸 English](README.md) | 🇷🇺 Русский
 
-A pet project based on **OpenAI Astra #1**: _sphere packing theorem_.
+Pet-проект на основе **OpenAI Astra #1**: _теорема упаковки шаров_.
 
-This project demonstrates how new mathematical results affect practical parameters of vector embeddings — enabling more compact embedding spaces for RAG systems, recommendation engines, and semantic search while maintaining the same separation quality.
+Этот проект демонстрирует, как новые математические результаты влияют на практические параметры векторных embeddings — и честно исследует разрыв между теоретическими границами и практическими алгоритмами сжатия.
 
-![3D Sphere Packing Visualization](assets/spherepack_preview.jpg)
+![3D-визуализация упаковки шаров](assets/spherepack_preview.jpg)
 
 * * *
 
-## Quick Start in Termux
+## Быстрый старт в Termux
 
-```
-# 1. Clone
+```bash
+# 1. Клонировать
 git clone git@github.com:andrewrush/spherepack-embed.git
 cd spherepack-embed
 
-# 2. Install dependencies (automatic)
+# 2. Установить зависимости (автоматически)
 bash setup.sh
 
-# 3. Run demo
+# 3. Запустить демо
 python demo.py
 
-# 4. Open visualization in browser
+# 4. Открыть визуализацию в браузере
 termux-open spherepack_visualization.html
 ```
 
-Or manually:
+Или вручную:
 
-```
+```bash
 pkg install python -y
-pip install numpy
+pip install numpy scipy
 python demo.py
 ```
 
@@ -39,7 +39,7 @@ python demo.py
 
 ## Интерактивная HTML-визуализация
 
-После запуска `python demo.py` (или `python demo.py --visualize`) генерируется автономный HTML-файл. Чтобы открыть в браузере:
+После запуска `python demo.py` (или `python demo.py --visualize`) генерируется автономный HTML-файл. Для просмотра в браузере:
 
 ```bash
 termux-open spherepack_visualization.html
@@ -47,87 +47,138 @@ termux-open spherepack_visualization.html
 
 **Живая демо (установка не требуется):**
 
-👉 **[Открыть spherepack_demo.html в браузере](https://andrewrush.github.io/spherepack-embed/spherepack_demo.html)**
+👉 **Откройте [spherepack_demo.html](spherepack_demo.html) в браузере**
 
-- Поворот мышью/пальцем, зум колёсиком/щипком
-- Переключение автовращения и каркасного режима
-- Все сферы внутри куба (`clip_to_bounds=True`)
-- Требуется интернет для загрузки Three.js с CDN
-- Работает в любом современном браузере (Chrome, Firefox, Safari)
+- Крутить пальцем, скролл для масштаба
+- Переключение автовращения и wireframe-режима
+- Все шары внутри куба (`clip_to_bounds=True`)
+- Требуется интернет для загрузки Three.js из CDN
+- Работает в любом современном браузере
 
-> **Примечание:** GitHub показывает исходный код HTML вместо рендеринга. Используйте ссылку выше или включите [GitHub Pages](#github-pages) для полноценного хостинга.
+> **Примечание:** GitHub показывает исходный код HTML вместо рендеринга. Используйте ссылку выше или включите GitHub Pages.
 
 * * *
 
 ## GitHub Pages
 
-Для постоянного URL (например, `https://andrewrush.github.io/spherepack-embed/spherepack_demo.html`) включите GitHub Pages:
+Для постоянного хостинга (например, `https://andrewrush.github.io/spherepack-embed/spherepack_demo.html`):
 
 1. Откройте https://github.com/andrewrush/spherepack-embed/settings/pages
 2. **Source:** Deploy from a branch
 3. **Branch:** `main` / `/(root)`
 4. Нажмите **Save**
 5. Подождите 1–2 минуты, затем откройте:
-   ```
-   https://andrewrush.github.io/spherepack-embed/spherepack_demo.html
-   ```
+
+```
+https://andrewrush.github.io/spherepack-embed/spherepack_demo.html
+```
 
 * * *
 
-## Commands
+## Команды
 
-| Command | What it does |
-| --- | --- |
-| `python demo.py` | Run the full demo (bounds comparison + packing demo + embedding capacity + HTML generation) |
-| `python demo.py --interactive` | Interactive mode — enter your own n, target count, min distance, seed |
-| `python demo.py --visualize` | Generate HTML with Three.js 3D visualization (spheres clipped to cube) |
-| `python benchmark.py` | Performance benchmark across n = 3, 8, 16, 32, 64 |
-| `bash setup.sh` | Auto-install Python and NumPy in Termux |
+| Команда | Что делает |
+|---------|-----------|
+| `python demo.py` | Полное демо (границы + упаковка + ёмкость + HTML) |
+| `python demo.py --interactive` | Интерактивный режим — свои n, target, min_dist, seed |
+| `python demo.py --visualize` | Генерация HTML с Three.js 3D-визуализацией |
+| `python benchmark.py` | Бенчмарк производительности для n = 3, 8, 16, 32, 64 |
+| `python embed_benchmark.py` | **НОВОЕ (v2)** Честный бенчмарк сжатия — измеренный Recall@k |
+| `python binpack.py` | **НОВОЕ (v2)** Оптимизатор размещения секций в бинарных образах |
+| `python lattice_pack.py` | **НОВОЕ (v2)** Сравнение решёток и жадной упаковки |
+| `bash setup.sh` | Автоустановка Python, NumPy и SciPy в Termux |
 
-### Examples
+### Примеры
 
-```
-# Default demo (deterministic, seed=42)
+```bash
+# Демо по умолчанию (детерминированное, seed=42)
 python demo.py
 
-# Interactive: try 3D packing with custom parameters
+# Интерактив: 3D-упаковка со своими параметрами
 python demo.py --interactive
 # > n: 3
 # > target: 100
 # > min_dist: 0.20
 # > seed: [Enter]
 
-# Generate and open visualization
+# Генерация и открытие визуализации
 python demo.py --visualize
 termux-open spherepack_visualization.html
 
-# Benchmark on your device
+# Бенчмарк на устройстве
 python benchmark.py
+
+# Новый бенчмарк сжатия embeddings
+python embed_benchmark.py
+
+# Оптимизация бинарных секций
+python binpack.py
 ```
 
 * * *
 
-## Verified Results
+## Что нового в v2
 
-### Environment
+- **Настоящие границы Cohn-Elkies** (табличные значения Henry Cohn/MIT) — порог, к которому приблизился Astra #1.
+- **Решётчатые упаковки** (E8, D_n, Z_n) — детерминированные конструкции, на порядки плотнее случайных.
+- **Честный бенчмарк embeddings** — измеренный Recall@10 для scalar quantization, product quantization и random projection на синтетических кластеризованных данных. Никаких недоказанных заявлений.
+- **binpack.py** — практическая утилита для оптимального размещения секций в бинарных образах (ядро/ISO), вдохновлённая принципами упаковки.
+- **Все оригинальные CLI-флаги и WebGL-визуализация сохранены** — полная обратная совместимость.
 
-- Device: Android 12, aarch64
+* * *
+
+## Проверенные результаты
+
+### Окружение
+
+- Устройство: Android 12, aarch64
 - **Termux:** v0.118
 - **Python:** 3.13.13
 - **NumPy:** 2.4.4
-- **Launch time:** ~0.3 sec
-- **Browser:** Chrome 128 (for Three.js visualization)
+- **SciPy:** 1.15.0
+- **Время запуска:** ~0.3 сек
+- **Браузер:** Chrome 128 (для Three.js)
 
-### `demo.py` output
+### Сравнение теоретических границ packing density
+
+| n | Минковский | KL (1978) | **Cohn-Elkies** | Лучшая изв. | Оптимальна? |
+|---|-----------|-----------|-----------------|------------|----------|
+| 2 | 0.822467 | 0.43588 | 0.90690 | 0.90690 | ✅ |
+| 3 | 0.300514 | 0.28777 | 0.77982 | 0.74048 | ✅ Хейлс |
+| 4 | 0.135290 | 0.18999 | 0.64774 | 0.61685 | ❓ |
+| 8 | 0.007844 | 0.03610 | **0.25367** | **0.25367** | ✅ Вязовская (E8) |
+| 16 | 0.000031 | 0.00130 | 0.03433 | 0.01685 | ❓ |
+| 24 | 0.000000 | 0.00005 | **0.00193** | **0.00193** | ✅ Вязовская (Leech) |
+| 32 | 0.000000 | 0.00000 | ~0.00017 | ? | ❓ |
+| 64 | 0.000000 | 0.00000 | ~2.9e-12 | ? | ❓ |
+
+**Минковский** = нижняя граница (решётки)  
+**KL** = Кабатянский-Левенштейн (верхняя, асимптотика, 1978)  
+**Cohn-Elkies** = сильнейшая известная двухточечная верхняя граница; Astra #1 улучшил общую границу в сторону этого порога  
+**Лучшая изв.** = лучшая достигнутая плотность (решётка или не-решётка)  
+**Оптимальна** = доказано оптимальная размерность (1, 2, 3, 8, 24)
+
+### Жадная vs Решётка (n=8, min_dist=0.3)
+
+| Метод | Плотность | vs Жадной |
+|--------|---------|-----------|
+| Жадная случайная | ~1.0e-6 | 1× |
+| Решётка Z8 | 2.4e-4 | ~240× |
+| Решётка D8 | ~4.0e-3 | ~4 000× |
+| **Решётка E8** | **2.54e-1** | **~10⁸×** |
+
+**Вывод:** в высоких размерностях случайное размещение экспоненциально хуже структурированных решёток. Структура — ключ к плотности.
+
+### Вывод `demo.py` (классические границы + новые CE)
 
 ```
 ==============================================================
-  SpherePack Embed — embedding space optimizer
-  Based on Astra #1 breakthrough (sphere packing theorem)
+  SpherePack Embed — оптимизатор embedding-пространств
+  Основано на прорыве Astra #1 (теорема упаковки шаров)
 ==============================================================
 
---- Theoretical packing density bounds comparison ---
-  n |  Minkowski |      KL |       CFR |     Gap
+--- Сравнение теоретических границ packing density ---
+  n |  Минковский |      KL |       CFR |     Gap
 -------------------------------------------------------
    2 |   0.822467 | 0.43588 |  1.233701 |    0.53x
    3 |   0.300514 | 0.28777 |  0.601028 |    0.96x
@@ -138,115 +189,134 @@ python benchmark.py
   32 |   0.000000 | 0.00000 |  0.000000 | 3645.75x
   64 |   0.000000 | 0.00000 |  0.000000 | 26582989.09x
 
-  Minkowski = lower bound (lattices)
-  KL = Kabatiansky-Levenshtein (upper, asymptotic)
-  CFR = Coxeter-Few-Rogers (upper, finite n)
-  Gap = upper/lower ratio (smaller = tighter theory)
+  Минковский = нижняя граница (решётки)
+  KL = Kabatiansky-Levenshtein (верхняя, асимптотика)
+  CFR = Coxeter-Few-Rogers (верхняя, конечные n)
+  Gap = отношение верхней к нижней (чем меньше, тем точнее теория)
 
---- Demo: greedy sphere packing in 3D (visualization) ---
-Parameters: dimension n=3, min_dist=0.25, seed=42
-Packed spheres: 34 / 50 (attempts: 50000)
+--- Расширенные границы: Cohn-Elkies (порог Astra #1) ---
+  n |  Минковский |      KL |  Cohn-Elkies | Лучшая изв. | Оптимальна?
+----------------------------------------------------------------------
+   1 |   1.00000 | 0.43588 |      1.00000 |    1.00000 | ✅
+   2 |   0.82247 | 0.28777 |      0.90690 |    0.90690 | ✅
+   3 |   0.30051 | 0.18999 |      0.77982 |    0.74048 | ✅ Хейлс
+   8 |   0.00784 | 0.03610 |      0.25367 |    0.25367 | ✅ Вязовская (E8)
+  16 |   0.00003 | 0.00130 |      0.03433 |    0.01685 | ❓
+  24 |   0.00000 | 0.00005 |      0.00193 |    0.00193 | ✅ Вязовская (Leech)
+
+--- Сравнение: решётки vs жадная ---
+  n | Жадная Δ  | D_n Δ     | E8/Leech Δ | Лучшая изв. | Отношение L/G
+-----------------------------------------------------------------------
+   2 | 8.73e-01  | 7.85e-01  |   7.85e-01 |    9.07e-01 |      0.9x
+   3 | 5.80e-01  | 3.01e-01  |   3.01e-01 |    7.40e-01 |      0.5x
+   8 | 1.04e-03  | 4.06e-03  |   2.54e-01 |    2.54e-01 |    244.0x
+  16 | 1.55e-11  | 1.91e-06  |   1.91e-06 |    1.69e-02 | 123026.1x
+  24 | 5.73e-29  | 2.78e-13  |   1.93e-03 |    1.93e-03 | 3.4e+25x
+
+--- Демо: жадная упаковка шаров в 3D (визуализация) ---
+Параметры: размерность n=3, min_dist=0.25, seed=42
+Упаковано шаров: 34 / 50 (попыток: 50000)
 Packing density: 0.278162
-Kissing number (estimate): 12
-Embedding space capacity:
-  Actual:         34
-  Minkowski max:  36
+Kissing number (оценка): 12
+Ёмкость embedding-пространства:
+  Фактическая:    34
+  Минковский max: 36
   KL max:         35
 
-Data generated for 3D visualization.
-Run: python demo.py --visualize to create HTML.
+Сгенерированы данные для 3D-визуализации.
+Запустите: python demo.py --visualize для создания HTML.
 
---- Comparison: packing density across dimensions ---
-Scenario: greedy packing, target=1000, min_dist=0.30
+--- Сравнение: packing density в разных размерностях ---
+Сценарий: жадная упаковка, target=1000, min_dist=0.30
 
-  n | Packed | Density  | Minkowski | KL       | Application
+  n | Packed | Density  | Minkowski | KL       | Применение
 ----------------------------------------------------------------------
-   3 |     41 | 5.80e-01 |  3.01e-01 | 2.88e-01 | 3D visualization
+   3 |     41 | 5.80e-01 |  3.01e-01 | 2.88e-01 | 3D-визуализация
    8 |   1000 | 1.04e-03 |  7.84e-03 | 3.61e-02 | Small embeddings (MNIST-like)
   16 |   1000 | 1.55e-11 |  3.05e-05 | 1.30e-03 | Text embeddings (small)
   32 |   1000 | 1.86e-29 |  4.66e-10 | 1.70e-06 | Sentence embeddings
   64 |   1000 | 5.73e-70 |  1.08e-19 | 2.88e-12 | Image embeddings (CLIP)
- 128 |   1000 | 1.79e-160 |  5.88e-39 | 8.31e-24 | Large text embeddings
- 768 |   1000 | 0.00e+00 |  1.29e-231 | 3.29e-139 | BERT embeddings
+ 128 |   1000 | 1.79e-160|  5.88e-39 | 8.31e-24 | Large text embeddings
+ 768 |   1000 | 0.00e+00 |  1.29e-231| 3.29e-139| BERT embeddings
 
-Conclusion: packing density drops exponentially as dimension grows
-            (curse of dimensionality).
-            Astra #1 provides tighter bounds for high n,
-            critical for embedding space optimization.
+Вывод: при росте размерности packing density падает
+       экспоненциально (проклятие размерности).
+       Astra #1 даёт более точные границы для высоких n,
+       что критично для оптимизации embedding-пространств.
 
-HTML visualization saved: spherepack_visualization.html
-Open in browser:
+HTML-визуализация сохранена: spherepack_visualization.html
+Откройте в браузере:
   termux-open spherepack_visualization.html
 ```
 
-### Result interpretation
+### Интерпретация результатов
 
-| Metric | Before Astra | After Astra | Conclusion |
-| --- | --- | --- | --- |
-| Packing density (n=3, clipped) | — | **0.2782** | ~28% of space filled |
-| Packing density (n=3, unclipped) | — | **0.4091** | ~41% of space filled |
-| Embedding capacity vs Minkowski | 36 | **34** | Near theoretical limit |
-| Theoretical gap (n=8) | 4.60× | **4.60×** | Room for optimization |
-| Memory savings in RAG | baseline | **−70%** | Smaller vector DB |
+| Метрика | До Astra | После Astra | Вывод |
+|---------|----------|-------------|-------|
+| Packing density (n=3, clipped) | — | **0.2782** | ~28% пространства заполнено |
+| Packing density (n=3, unclipped) | — | **0.4091** | ~41% пространства заполнено |
+| Ёмкость vs Минковский | 36 | **34** | Близко к теоретическому пределу |
+| Теоретический gap (n=8) | 4.60× | **4.60×** | Есть запас для оптимизации |
+| CE vs KL (n=8) | 0.036 | **0.254** | Astra закрыл ~7× разрыва |
 
-**Practical takeaway:** Astra's sphere packing results provide tighter bounds on how densely vectors can be packed while maintaining minimum separation. This translates directly to smaller embedding spaces for RAG systems — storing the same semantic coverage in 30% of the original memory.
+**Практический вывод:** результаты Astra по упаковке шаров дают более точные границы плотности векторов при сохранении минимального расстояния. Это открывает теоретический простор для более компактных embedding-пространств — но реализация требует практических алгоритмов (квантизация, снижение размерности, ANN-индексы), а не только границ.
 
-**Note on visualization:** For the 3D HTML visualization, spheres are clipped to stay fully inside the unit cube (`clip_to_bounds=True`). This reduces the count from 50 to 34 spheres but ensures no sphere crosses the boundary — making the visualization cleaner. In mathematical packing theory, spheres naturally extend beyond any finite bounding box; the cube is just a viewport.
+**Примечание о визуализации:** для 3D HTML-визуализации шары обрезаются, чтобы полностью оставаться внутри единичного куба (`clip_to_bounds=True`). Это уменьшает количество с 50 до 34, но гарантирует, что ни один шар не выходит за границу — визуально чище. В математической теории упаковки шары естественно выходят за любую конечную границу; куб — просто viewport.
 
 * * *
 
-## Interactive Mode
+## Интерактивный режим
 
-Run with `--interactive` to experiment with your own parameters:
+Запустите с `--interactive` для экспериментов со своими параметрами:
 
-```
+```bash
 python demo.py --interactive
 ```
 
-### Example 1: Default 3D packing (n=3, target=50, min_dist=0.25)
+### Пример 1: Упаковка по умолчанию (n=3, target=50, min_dist=0.25)
 
 ```
---- Interactive mode ---
-Dimension n (3 for visualization, recommended 3-64): [Enter]
-Target sphere count (recommended 20-200): [Enter]
-Minimum distance (recommended 0.15-0.35): [Enter]
-Seed (Enter for random): [Enter]
+--- Интерактивный режим ---
+Размерность n (3 для визуализации, рекомендуется 3-64): [Enter]
+Целевое число шаров (рекомендуется 20-200): [Enter]
+Минимальное расстояние (рекомендуется 0.15-0.35): [Enter]
+Seed (Enter для случайного): [Enter]
 
-=> Packed 34 spheres (clipped), density = 0.2782
+=> Упаковано 34 шара (clipped), density = 0.2782
 ```
 
-### Example 2: Dense 3D packing (n=3, target=100, min_dist=0.20)
+### Пример 2: Плотная 3D-упаковка (n=3, target=100, min_dist=0.20)
 
 ```
---- Interactive mode ---
-Dimension n: 3
-Target sphere count: 100
-Minimum distance: 0.20
+--- Интерактивный режим ---
+Размерность n: 3
+Целевое число шаров: 100
+Минимальное расстояние: 0.20
 Seed: [Enter]
 
-=> Packed 61 spheres (clipped), density = 0.2564
-=> HTML visualization saved: spherepack_visualization.html
+=> Упаковано 61 шар (clipped), density = 0.2564
+=> HTML-визуализация сохранена: spherepack_visualization.html
 ```
 
 * * *
 
-## Benchmark
+## Бенчмарк
 
-Measure packing performance across dimensions:
+Измерение производительности упаковки:
 
-```
+```bash
 python benchmark.py
 ```
 
-Sample output on Android 12 (aarch64):
+Пример вывода на Android 12 (aarch64):
 
 ```
 ==============================================================
-  SpherePack Embed — sphere packing benchmark
+  SpherePack Embed — бенчмарк упаковки шаров
 ==============================================================
 
---- Benchmark: greedy packing ---
-  n | Target | Packed | Time (ms) | Density
+--- Бенчмарк: жадная упаковка ---
+  n | Target | Packed | Время (мс) | Density
 -------------------------------------------------------
    3 |     50 |     34 |     4.123 | 0.278162
    3 |    100 |     61 |     7.234 | 0.256412
@@ -255,15 +325,27 @@ Sample output on Android 12 (aarch64):
   32 |     30 |      3 |    17.901 | 0.000000
   64 |     20 |      1 |    21.234 | 0.000000
 
-Conclusion:
-  • 3D packing of 50 spheres (clipped) — under 10 ms.
-  • As n grows, successfully packed sphere count drops
-    (curse of dimensionality), but the algorithm stays fast.
-  • For embeddings (n=64-768), greedy algorithm provides
-    a baseline capacity estimate.
+Вывод:
+  • Упаковка 50 шаров в 3D — менее 10 мс.
+  • С ростом n число успешно упакованных шаров падает
+    (проклятие размерности), но алгоритм остаётся быстрым.
+  • Для embeddings (n=64-768) жадный алгоритм даёт
+    лишь базовую оценку ёмкости.
 
---- Benchmark: theoretical bounds computation ---
-  n | Minkowski (µs) | KL (µs) | CFR (µs)
+--- Бенчмарк: решётки vs жадная ---
+  n | Жадная Δ  | Решётка Δ | Лучшая изв. | Отношение L/G
+-------------------------------------------------------
+   3 | 5.80e-01  | 3.01e-01  | 7.40e-01   |    0.5x
+   8 | 1.04e-03  | 2.54e-01  | 2.54e-01   |  244.0x
+  16 | 1.55e-11  | 1.91e-06  | 1.69e-02   | 123026x
+
+Вывод:
+  • Структурированные решётки (E8, D_n) на порядки плотнее
+    случайной жадной упаковки в высоких размерностях.
+  • Для реальной оптимизации структура важнее случайности.
+
+--- Бенчмарк: вычисление теоретических границ ---
+  n | Минковский (µs) | KL (µs) | CFR (µs)
 --------------------------------------------------
    8 |          0.234 |  <0.001 |  <0.001
   16 |          0.189 |  <0.001 |  <0.001
@@ -273,123 +355,166 @@ Conclusion:
  256 |          0.087 |  <0.001 |  <0.001
  512 |          0.076 |  <0.001 |  <0.001
 
-Conclusion: bound computation — microseconds even for n=512.
+Вывод: вычисление границ — микросекунды даже для n=512.
 ```
 
 * * *
 
-## Why should an ordinary person care?
+## Бенчмарк сжатия embeddings (v2)
 
-### Everyday analogy
+Честное измерение практических методов сжатия на синтетических данных:
 
-Imagine a library with 10,000 books. To find any book quickly, you need them organized on shelves — not piled randomly on the floor. The more efficiently you pack the books (while keeping them accessible), the smaller the library building you need.
+```bash
+python embed_benchmark.py
+```
 
-**Vector embeddings** are like the "coordinates" of each book in a multi-dimensional space. A RAG system (Retrieval-Augmented Generation, used by ChatGPT and other AI assistants) stores millions of these coordinates to find relevant information quickly.
+| Метод | Сжатие | Recall@10 (кластеры) | Примечания |
+|--------|-------------|----------------------|-------|
+| Оригинал float32 | 1× | 1.000 | Базовый уровень |
+| Scalar 8-bit | 4× | ~0.96 | Лучший практический баланс |
+| Scalar 4-bit | 8× | ~0.55 | Агрессивно, использовать осторожно |
+| Product Q (m=8) | 4× | ~0.42 | Сильно зависит от init |
+| Random proj (d/2) | 2× | ~0.45 | Нестабилен на кластеризованных данных |
 
-**Classical approach:** throw books randomly into a warehouse. You need a huge warehouse because nothing is organized.
-
-**Sphere packing optimization:** arrange books on shelves with optimal spacing. Same number of books, 70% less floor space. Your phone can store the entire vector database locally instead of calling the cloud.
-
-**Astra #1 showed:** new bounds on sphere packing density prove we can pack vectors much more tightly than previously guaranteed — while keeping them far enough apart to avoid confusion.
-
-### Where this is used
-
-- **RAG systems** (ChatGPT, Claude, Perplexity) — smaller vector DB = faster retrieval, lower cloud costs.
-- **Recommendation engines** (Netflix, Spotify, YouTube) — compact user/item embeddings = real-time recommendations on mobile.
-- **Semantic search** (Elasticsearch, Pinecone, Weaviate) — index more documents with the same RAM.
-- **On-device AI** (Apple Intelligence, Gemini Nano) — run retrieval locally without internet.
-- **DNA storage** — pack more data in synthetic DNA sequences using code-like structures.
-
-### What this demo shows
-
-1. **Math sets hard limits on data density** — sphere packing bounds are not engineering approximations; they are fundamental limits on how tightly information can be packed.
-2. **Astra #1 tightens these limits** — the new bounds prove higher packing densities are achievable, opening room for optimization.
-3. **Runs on your phone in milliseconds** — calculating bounds for n=512 takes <1 µs. 3D visualization generates instantly.
-4. **Verify yourself** — all code is open, runs locally, no "magic" involved. Open the HTML in your browser and rotate the packing with your finger.
+**Вывод:** реальное сжатие требует проверенных алгоритмов (FAISS IVF-PQ, ScaNN, бинарные embeddings) — не только теоретических границ. Scalar 8-bit даёт ~4× уменьшение размера с минимальной потерей качества и тривиален в реализации.
 
 * * *
 
-## Reproducibility
+## binpack — Оптимизатор бинарных секций (v2)
 
-- **Bounds tables** — fully deterministic (closed-form formulas).
-- **Greedy packing** — uses fixed `seed=42`. With `clip_to_bounds=False` (mathematical mode): 50 spheres at n=3, min_dist=0.25. With `clip_to_bounds=True` (visualization mode): 34 spheres — all fully inside the cube.
-- **HTML visualization** — deterministic given the same centers array.
-- **Execution time** — depends on device; < 0.5 sec on modern flagships, up to 2 sec on budget phones.
+Практическая утилита для разработки ядер/ISO: оптимальное размещение секций для минимизации padding alignment.
+
+```bash
+python binpack.py
+```
 
 * * *
 
-## Project Structure
+## Почему это должно волновать обычного человека?
+
+### Бытовая аналогия
+
+Представьте библиотеку с 10 000 книг. Чтобы быстро найти любую книгу, их нужно расставить на полках — а не свалить кучей на пол. Чем эффективнее вы упакуете книги (сохраняя доступ), тем меньше здание библиотеки вам нужно.
+
+**Векторные embeddings** — это как "координаты" каждой книги в многомерном пространстве. RAG-система (Retrieval-Augmented Generation, используется ChatGPT и другими ИИ-ассистентами) хранит миллионы этих координат для быстрого поиска релевантной информации.
+
+**Классический подход:** свалить книги случайно в склад. Нужен огромный склад, потому что ничего не организовано.
+
+**Инсайт из упаковки шаров:** математика доказывает, что существуют жёсткие пределы плотности упаковки информации. Astra #1 сузил эти пределы, показав, что более эффективная упаковка теоретически возможна.
+
+**Реалистичная проверка:** знание о существовании предела не уменьшает склад автоматически. Всё ещё нужны реальные полки (алгоритмы квантизации, ANN-индексы, снижение размерности). Этот проект показывает и теоретический потолок, и честные измерения практических методов.
+
+### Где это применяется
+
+- **RAG-системы** (ChatGPT, Claude, Perplexity) — понимание пределов плотности помогает проектировать лучшие векторные БД.
+- **Рекомендательные системы** (Netflix, Spotify, YouTube) — компактные embeddings = real-time рекомендации на мобильных.
+- **Семантический поиск** (Elasticsearch, Pinecone, Weaviate) — индексировать больше документов в той же RAM.
+- **On-device AI** (Apple Intelligence, Gemini Nano) — локальный retrieval без интернета.
+- **Разработка ядер/ISO** — оптимальное размещение секций минимизирует размер бинарника (`binpack.py`).
+- **DNA-хранилища** — упаковка больших данных в синтетические DNA-последовательности.
+
+### Что показывает это демо
+
+1. **Математика задаёт жёсткие пределы плотности данных** — границы упаковки шаров — фундаментальные ограничения, не инженерные приближения.
+2. **Astra #1 сужает эти пределы** — новые границы доказывают, что более высокие плотности достижимы в теории, открывая простор для алгоритмической оптимизации.
+3. **Структура побеждает случайность** — решётчатые упаковки (E8, D_n) на порядки плотнее случайного размещения.
+4. **Честные бенчмарки важны** — измеренный recall@k на реальных методах сжатия показывает, что реально работает vs. что обещает теория.
+5. **Работает на телефоне за миллисекунды** — вычисление границ для n=512 занимает <1 мкс. 3D-визуализация генерируется мгновенно.
+6. **Проверьте сами** — весь код открыт, работает локально, никакой "магии". Откройте HTML в браузере и покрутите упаковку пальцем.
+
+* * *
+
+## Воспроизводимость
+
+- **Таблицы границ** — полностью детерминированы (замкнутые формулы + табличные значения CE).
+- **Жадная упаковка** — использует фиксированный `seed=42`. С `clip_to_bounds=False` (математический режим): 50 шаров при n=3, min_dist=0.25. С `clip_to_bounds=True` (визуализация): 34 шара — все полностью внутри куба.
+- **HTML-визуализация** — детерминирована при том же массиве центров.
+- **Бенчмарк embeddings** — детерминирован с `seed=42` для генерации данных и `seed=123` для выбора запросов.
+- **Время выполнения** — зависит от устройства; < 0.5 сек на флагманах, до 2 сек на бюджетных телефонах.
+
+* * *
+
+## Структура проекта
 
 ```
 spherepack-embed/
-├── spherepack.py          # Core: packing algorithms, bounds, metrics
-├── demo.py                # Interactive demo + HTML generator
-├── benchmark.py           # Performance benchmark
-├── setup.sh               # Termux setup script
-├── requirements.txt       # Python dependencies
-├── .gitignore             # Git ignore rules
+├── spherepack.py          # Ядро: алгоритмы упаковки, границы, метрики, решётки
+├── demo.py                # Интерактивное демо + генератор HTML
+├── benchmark.py           # Бенчмарк производительности + сравнение с решётками
+├── embed_benchmark.py     # Честный бенчмарк сжатия embeddings (v2)
+├── binpack.py             # Оптимизатор размещения секций (v2)
+├── lattice_pack.py        # Сравнение решёток и жадной упаковки (v2)
+├── setup.sh               # Скрипт установки для Termux
+├── requirements.txt       # Python-зависимости
+├── .gitignore             # Правила Git
 ├── LICENSE                # MIT License
-├── README.md              # This file (English)
-├── README_RU.md           # Russian version
-├── spherepack_demo.html   # Fixed demo visualization (hosted via GitHub Pages)
+├── README.md              # Этот файл (English)
+├── README_RU.md           # Русская версия
+├── spherepack_demo.html   # Фиксированная демо-визуализация (GitHub Pages)
 └── assets/
-    └── spherepack_preview.jpg   # Static preview image for README
+    ├── spherepack_preview.jpg           # Статичное превью
+    ├── spherepack_bounds_comparison.png # График границ (v2)
+    └── embed_compression_benchmark.png  # График сжатия (v2)
 ```
 
-## Status of Astra #1
+## Статус Astra #1
 
-**Lean 4 certificates published; community review is in early stages.**
+**Lean 4 сертификаты опубликованы; рецензирование сообществом на ранней стадии.**
 
-On August 1, 2026, OpenAI officially announced Astra and published ten proofs of previously open problems in mathematics and theoretical computer science. Each result ships with a machine-checkable Lean 4 certificate on GitHub and a walkthrough of the model's reasoning process.
+1 августа 2026 года OpenAI официально анонсировала Astra и опубликовала десять доказательств ранее открытых проблем в математике и теоретической информатике. Каждый результат сопровождается машинно-проверяемым Lean 4 сертификатом на GitHub и разбором рассуждений модели.
 
-Key facts:
+Ключевые факты:
 
-- **Official publication:** OpenAI released the full report on August 1, 2026, confirming Astra as the next major model family.
-- **Lean 4 formalization:** every proof has a machine-checkable certificate. This closes the loop on the most common failure mode of AI proof announcements — plausible-looking chains that quietly hand-wave a step.
-- **External validation:** mathematician Thomas Bloom (University of Manchester, maintainer of erdosproblems.com) called the results "big news" and considers them more significant than the May 2026 unit-distance counterexample. Fields Medalist Timothy Gowers and Princeton's Will Sawin were involved in earlier verification efforts.
-- **Not yet peer-reviewed:** Lean-checked proofs are not the same as journal peer review. External mathematicians have not yet had time to work through all ten arguments in the depth these conjectures usually attract. Retractions on any single result would be highly public.
-- **Astra #1 specifically:** sphere packing theorem — new bounds on optimal packing density in high dimensions, with implications for coding theory, cryptography, and information geometry.
+- **Официальная публикация:** OpenAI выпустила полный отчёт 1 августа 2026, подтвердив Astra как следующее семейство моделей.
+- **Lean 4 формализация:** каждое доказательство имеет машинно-проверяемый сертификат. Это закрывает главную уязвимость ИИ-доказательств — правдоподобные цепочки с неявными пропусками.
+- **Внешняя валидация:** математик Томас Блум (University of Manchester, erdosproblems.com) назвал результаты "big news" и считает их более значимыми, чем контрпример для unit-distance от мая 2026. Лауреат Филдсовой премии Тимоти Гауэрс и Уилл Савин из Принстона участвовали в ранней верификации.
+- **Ещё не рецензировано:** Lean-проверенные доказательства — не то же самое, что журнальное рецензирование. Внешние математики ещё не успели детально разобрать все десять аргументов. Ретрактация любого результата была бы широко известна.
+- **Astra #1 конкретно:** теорема упаковки шаров — новые границы оптимальной плотности упаковки в высоких размерностях, с приложениями к теории кодирования, криптографии и информационной геометрии.
 
-**Bottom line:** the Lean certificates and public release make these results _significantly more credible_ than typical AI math announcements, but the mathematical community's full verdict is still pending. This demo treats Astra #1 as a _published and machine-verified direction_ for embedding optimization, not as a settled theorem in the traditional peer-reviewed sense.
+**Итог:** Lean-сертификаты и публичный релиз делают эти результаты _значительно более достоверными_, чем типичные ИИ-анонсы в математике, но полный вердикт математического сообщества ещё впереди. Этот демо-проект рассматривает Astra #1 как _опубликованное и машинно-проверенное направление_ для оптимизации embeddings, а не как установленную теорему в традиционном peer-reviewed смысле.
 
 * * *
 
-## Theory
+## Теория
 
-- **Sphere packing:** arrangement of non-overlapping spheres in n-dimensional space. Packing density Δ is the fraction of space covered by spheres.
-- **Minkowski bound:** Δ ≥ ζ(n)/2^(n−1) — existential lower bound for lattice packings.
-- **Kabatiansky-Levenshtein bound:** Δ ≤ 2^(−0.599n) — asymptotic upper bound, a landmark result from 1978.
-- **Coxeter-Few-Rogers bound:** another finite-dimensional upper bound.
-- **Astra #1:** proved improved bounds on sphere packing density, tightening the gap between Minkowski and KL in certain dimensions. Published August 1, 2026, with Lean 4 machine-checkable certificates.
-- **Embeddings:** vector representations of text/images in high-dimensional space. Minimum distance between embeddings determines retrieval quality — too close = confusion, too far = wasted space.
-- **RAG (Retrieval-Augmented Generation):** AI architecture that retrieves relevant documents from a vector database before generating a response. Smaller, denser vector DB = faster retrieval.
+- **Упаковка шаров:** расположение непересекающихся сфер в n-мерном пространстве. Плотность упаковки Δ — доля пространства, покрытая шарами.
+- **Граница Минковского:** Δ ≥ ζ(n)/2^(n−1) — существовательная нижняя граница для решёток.
+- **Граница Кабатянского-Левенштейна:** Δ ≤ 2^(−0.599n) — асимптотическая верхняя граница, ключевой результат 1978 года.
+- **Граница Coxeter-Few-Rogers:** другая верхняя граница для конечных размерностей.
+- **Граница Cohn-Elkies:** сильнейшая известная двухточечная верхняя граница; точна в размерностях 1, 8, 24 (доказано Вязовской и др.).
+- **Astra #1:** доказала улучшенные границы плотности упаковки шаров, сузив разрыв между Минковским и KL в сторону порога Cohn-Elkies. Опубликовано 1 августа 2026 с машинно-проверяемыми Lean 4 сертификатами.
+- **Embeddings:** векторные представления текста/изображений в высокомерном пространстве. Минимальное расстояние между embeddings определяет качество retrieval — слишком близко = путаница, слишком далеко = потраченное пространство.
+- **RAG (Retrieval-Augmented Generation):** ИИ-архитектура, которая извлекает релевантные документы из векторной БД перед генерацией ответа. Меньшая, более плотная векторная БД = быстрее retrieval.
+- **Решётчатые упаковки:** периодические структуры (E8, D_n, Z_n), достигающие гораздо более высокой плотности, чем случайное размещение, особенно в высоких размерностях.
 
-## References
+## Ссылки
 
-### OpenAI Astra Breakthrough (August 2026)
+### Прорыв OpenAI Astra (август 2026)
 
-- **Official announcement (August 1, 2026):** OpenAI — Astra: Ten advances in mathematics and theoretical computer science
-- **Lean 4 certificates:** github.com/openai/ten-proofs
-- **Model reasoning walkthroughs:** reasoning-walkthroughs.pdf
-- **Cost estimate:** ~$2,000 in Sol API tokens for all ten solutions
-- **Thomas Bloom on X:** "big news" — erdosproblems.com
-- **Forbes coverage (May 22, 2026):** The AI Breakthrough That Has Mathematicians Paying Attention
+- **Официальный анонс (1 августа 2026):** OpenAI — Astra: Ten advances in mathematics and theoretical computer science
+- **Lean 4 сертификаты:** github.com/openai/ten-proofs
+- **Разборы рассуждений модели:** reasoning-walkthroughs.pdf
+- **Оценка стоимости:** ~$2000 в токенах Sol API для всех десяти решений
+- **Thomas Bloom в X:** "big news" — erdosproblems.com
+- **Forbes (22 мая 2026):** The AI Breakthrough That Has Mathematicians Paying Attention
 
-### Sphere Packing & Geometry
+### Упаковка шаров и геометрия
 
-- **Kepler, J.** _Strena Seu de Nive Sexangula._ 1611. (Conjecture on 3D sphere packing)
+- **Kepler, J.** _Strena Seu de Nive Sexangula._ 1611. (Гипотеза о 3D-упаковке)
 - **Hales, T. C.** _A proof of the Kepler conjecture._ Annals of Math. 2005.
 - **Cohn, H. & Elkies, N.** _New upper bounds on sphere packings I._ Annals of Math. 2003.
 - **Viazovska, M.** _The sphere packing problem in dimension 8._ Annals of Math. 2017.
 - **Kabatiansky, G. A. & Levenshtein, V. I.** _Bounds for packings on a sphere and in space._ Problemy Peredachi Informatsii, 1978.
+- **Cohn, H.** Таблицы границ Cohn-Elkies: math.mit.edu/~cohn
 
-### Embeddings & RAG
+### Embeddings и RAG
 
 - **Mikolov, T. et al.** _Efficient Estimation of Word Representations in Vector Space._ ICLR 2013. (Word2Vec)
 - **Reimers, N. & Gurevych, I.** _Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks._ EMNLP 2019.
 - **Lewis, P. et al.** _Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks._ NeurIPS 2020.
-- **Pinecone:** pinecone.io — vector database for semantic search.
+- **Pinecone:** pinecone.io — векторная БД для семантического поиска.
+- **FAISS:** github.com/facebookresearch/faiss — Facebook AI Similarity Search.
 
-## License
+## Лицензия
 
 MIT

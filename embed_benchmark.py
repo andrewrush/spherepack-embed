@@ -29,7 +29,7 @@ def generate_embeddings(n_samples=3000, n_dim=128, dist="clusters"):
 
 
 def pairwise_distances(X, Y):
-    """Compute pairwise Euclidean distances without scipy."""
+    """Compute pairwise Euclidean distances without external deps."""
     x2 = np.sum(X**2, axis=1, keepdims=True)
     y2 = np.sum(Y**2, axis=1, keepdims=True)
     xy = X @ Y.T

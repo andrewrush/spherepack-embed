@@ -42,7 +42,7 @@ Or manually:
 
 ```bash
 pkg install python -y
-pip install numpy scipy
+pip install numpy
 python demo.py
 ```
 
@@ -97,7 +97,7 @@ https://andrewrush.github.io/spherepack-embed/spherepack_demo.html
 | `python embed_benchmark.py` | **NEW (v2)** Honest compression benchmark — measured Recall@k on synthetic data |
 | `python binpack.py` | **NEW (v2)** Binary section placement optimizer for kernel/ISO images |
 | `python lattice_pack.py` | **NEW (v2)** Lattice vs greedy packing comparison |
-| `bash setup.sh` | Auto-install Python, NumPy and SciPy in Termux |
+| `bash setup.sh` | Auto-install Python and NumPy in Termux |
 
 ### Examples
 
@@ -146,7 +146,6 @@ python binpack.py
 - **Termux**
 - **Python:** 3.13.13
 - **NumPy:** 2.4.4
-- **SciPy:** 1.15.0
 - **Launch time:** ~0.3 sec
 - **Browser:** Chrome 128 (for Three.js visualization)
 

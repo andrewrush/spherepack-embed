@@ -42,7 +42,7 @@ termux-open spherepack_visualization.html
 
 ```bash
 pkg install python -y
-pip install numpy scipy
+pip install numpy
 python demo.py
 ```
 
@@ -97,7 +97,7 @@ https://andrewrush.github.io/spherepack-embed/spherepack_demo.html
 | `python embed_benchmark.py` | **НОВОЕ (v2)** Честный бенчмарк сжатия — измеренный Recall@k |
 | `python binpack.py` | **НОВОЕ (v2)** Оптимизатор размещения секций в бинарных образах |
 | `python lattice_pack.py` | **НОВОЕ (v2)** Сравнение решёток и жадной упаковки |
-| `bash setup.sh` | Автоустановка Python, NumPy и SciPy в Termux |
+| `bash setup.sh` | Автоустановка Python и NumPy в Termux |
 
 ### Примеры
 
@@ -146,7 +146,6 @@ python binpack.py
 - **Termux**
 - **Python:** 3.13.13
 - **NumPy:** 2.4.4
-- **SciPy:** 1.15.0
 - **Время запуска:** ~0.3 сек
 - **Браузер:** Chrome 128 (для Three.js)
 

@@ -56,7 +56,7 @@ python demo.py
 termux-open spherepack_visualization.html
 ```
 
-**Живая демо (установка не требуется):**
+**Интерактивная демонстрация (установка не требуется):**
 
 👉 **Откройте [spherepack_demo.html](https://andrewrush.github.io/spherepack-embed/spherepack_demo.html) в браузере**
 

@@ -47,7 +47,7 @@ termux-open spherepack_visualization.html
 
 **Live demo (no install required):**
 
-👉 **Open [spherepack_demo.html](spherepack_demo.html) in browser**
+👉 **Open [spherepack_demo.html](https://andrewrush.github.io/spherepack-embed/spherepack_demo.html) in browser**
 
 - Drag to rotate, scroll to zoom
 - Toggle auto-rotation and wireframe mode

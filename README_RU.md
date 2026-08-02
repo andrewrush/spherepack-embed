@@ -47,7 +47,7 @@ termux-open spherepack_visualization.html
 
 **Живая демо (установка не требуется):**
 
-👉 **Откройте [spherepack_demo.html](spherepack_demo.html) в браузере**
+👉 **Откройте [spherepack_demo.html](https://andrewrush.github.io/spherepack-embed/spherepack_demo.html) в браузере**
 
 - Крутить пальцем, скролл для масштаба
 - Переключение автовращения и wireframe-режима

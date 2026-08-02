@@ -152,6 +152,8 @@ python binpack.py
 
 ### Theoretical packing density bounds comparison
 
+![Bounds comparison](assets/spherepack_bounds_comparison.png)
+
 | n | Minkowski | KL (1978) | **Cohn-Elkies** | Best Known | Optimal? |
 |---|-----------|-----------|-----------------|------------|----------|
 | 2 | 0.822467 | 0.43588 | 0.90690 | 0.90690 | ✅ |
@@ -189,8 +191,6 @@ python binpack.py
 ==============================================================
 
 --- Theoretical packing density bounds comparison ---
-
-![Bounds comparison](assets/spherepack_bounds_comparison.png)
 
   n |  Minkowski |      KL |       CFR |     Gap
 -------------------------------------------------------

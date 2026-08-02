@@ -136,8 +136,9 @@ def print_embedding_comparison():
     print()
     print("Вывод: при росте размерности packing density падает")
     print("       экспоненциально (проклятие размерности).")
-    print("       Astra #1 даёт более точные границы для высоких n,")
-    print("       что критично для оптимизации embedding-пространств.")
+    print("       Если Astra #1 подтвердится, он может сузить")
+    print("       теоретические границы для высоких n.")
+    print("       Практическая польза требует отдельных алгоритмов.")
     print()
 
 def generate_html_visualization(centers, filename="spherepack_visualization.html", min_dist=0.25):
